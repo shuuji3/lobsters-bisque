@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+import time
 
+import functions_framework
 import feedparser
 import requests
-import time
 
 # Constants
 
@@ -31,30 +32,38 @@ def fetch_all_articles(url=LOBSTERS_FEED_URL):
 
         time.sleep(0.5)   # Work around rate limit
 
-def write_articles_feed(articles):
-    print('''<?xml version="1.0" encoding="UTF-8"?>
+def generate_articles_feed(articles):
+    feed = '''<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-<channel>
-<title>Lobsters</title>
-<link>https://lobste.rs</link>
-<description></description>''')
+  <channel>
+    <title>Lobsters</title>
+    <link>https://lobste.rs</link>
+    <description></description>'''
 
     for article in sorted(articles, key=lambda a: a['timestamp'], reverse=True):
-        print('''<item>
-<title>{article_title}</title>
-<author>{article_author}</author>
-<link>{article_link}</link>
-<guid isPermaLink="false">{article_guid}</guid>
-<pubDate>{article_published}</pubDate>
-</item>'''.format(article_title     = article['title'],
-                  article_author    = article['author'],
-                  article_link      = article['link'],
-                  article_guid      = article['guid'],
-                  article_published = article['published']))
-    print('''</channel>
-</rss>''')
+        feed += f'''
+    <item>
+      <title>{article['title']}</title>
+      <author>{article['author']}</author>
+      <link>{article['link']}</link>
+      <guid isPermaLink="false">{article['guid']}</guid>
+      <pubDate>{article['published']}</pubDate>
+    </item>'''
 
-# Main Execution
+    feed += '''
+  </channel>
+</rss>'''
+
+    return feed
+
+@functions_framework.http
+def main(request):
+    return generate_articles_feed(
+        a
+        for a
+        in fetch_all_articles()
+        if a['score'] > LOBSTERS_MINIMUM_SCORE
+    )
 
 if __name__ == '__main__':
-    write_articles_feed(a for a in fetch_all_articles() if a['score'] > LOBSTERS_MINIMUM_SCORE)
+    print(main(None))

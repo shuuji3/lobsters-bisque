@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
+import os
 import time
 
-import functions_framework
 import feedparser
+from google.cloud import storage
 import requests
 
 # Constants
@@ -56,14 +57,22 @@ def generate_articles_feed(articles):
 
     return feed
 
-@functions_framework.http
-def main(request):
+def generate_feed_with_limit():
     return generate_articles_feed(
-        a
-        for a
-        in fetch_all_articles()
+        a for a in fetch_all_articles()
         if a['score'] > LOBSTERS_MINIMUM_SCORE
     )
 
+def main(request):
+    client = storage.Client()
+    bucket_name = os.environ['LOBSTERS_BISQUE_BUCKET_NAME']
+    bucket = client.get_bucket(bucket_name)
+
+    feed = generate_feed_with_limit()
+    blob = storage.Blob('lobsters.rss', bucket)
+    blob.upload_from_string(feed, content_type='application/rss+xml')
+
+    return feed
+
 if __name__ == '__main__':
-    print(main(None))
+    print(generate_feed_with_limit())

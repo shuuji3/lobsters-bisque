@@ -6,4 +6,5 @@ deploy:
 		--runtime=python310 \
 		--gen2 \
 		--entry-point=main \
+		--timeout=2m \
 		${LOBSTERS_BISQUE_FUNCTION_NAME}

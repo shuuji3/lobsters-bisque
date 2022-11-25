@@ -14,3 +14,4 @@
 .gitignore
 
 .idea
+venv

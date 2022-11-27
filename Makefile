@@ -7,4 +7,5 @@ deploy:
 		--gen2 \
 		--entry-point=main \
 		--timeout=2m \
+		--set-env-vars=LOBSTERS_BISQUE_BUCKET_NAME=${LOBSTERS_BISQUE_BUCKET_NAME} \
 		${LOBSTERS_BISQUE_FUNCTION_NAME}

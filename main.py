@@ -25,7 +25,8 @@ def fetch_all_articles(url=LOBSTERS_FEED_URL):
         yield {
             'title'    : entry.title,
             'author'   : entry.author.split('@')[0],
-            'link'     : entry.comments,
+            'link'     : entry.link,
+            'comments' : entry.comments,
             'published': entry.published,
             'timestamp': entry.published_parsed,
             'guid'     : entry.guid,
@@ -50,6 +51,7 @@ def generate_articles_feed(articles):
       <link>{article['link']}</link>
       <guid isPermaLink="false">{article['guid']}</guid>
       <pubDate>{article['published']}</pubDate>
+      <description>comments: {article['comments']}</description>
     </item>'''
 
     feed += '''

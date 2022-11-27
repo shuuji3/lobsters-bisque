@@ -3,6 +3,7 @@ import os
 import time
 
 import feedparser
+import functions_framework
 from google.cloud import storage
 import requests
 
@@ -63,7 +64,8 @@ def generate_feed_with_limit():
         if a['score'] > LOBSTERS_MINIMUM_SCORE
     )
 
-def main(request):
+@functions_framework.cloud_event
+def main(cloud_event):
     client = storage.Client()
     bucket_name = os.environ['LOBSTERS_BISQUE_BUCKET_NAME']
     bucket = client.get_bucket(bucket_name)

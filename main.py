@@ -51,7 +51,10 @@ def generate_articles_feed(articles):
       <link>{article['link']}</link>
       <guid isPermaLink="false">{article['guid']}</guid>
       <pubDate>{article['published']}</pubDate>
-      <description>comments: {article['comments']}</description>
+      <description>
+        <p>Article URL: {article['link']}</p>
+        <p>Comments URL: {article['comments']}</p>
+      </description>
     </item>'''
 
     feed += '''

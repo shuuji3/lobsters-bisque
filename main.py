@@ -52,8 +52,10 @@ def generate_articles_feed(articles):
       <guid isPermaLink="false">{article['guid']}</guid>
       <pubDate>{article['published']}</pubDate>
       <description>
+      <![CDATA[
         <p>Article URL: {article['link']}</p>
         <p>Comments URL: {article['comments']}</p>
+      ]]>
       </description>
     </item>'''
 
